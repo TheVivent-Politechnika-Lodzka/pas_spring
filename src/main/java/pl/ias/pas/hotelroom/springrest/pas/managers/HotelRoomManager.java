@@ -1,21 +1,22 @@
 package pl.ias.pas.hotelroom.springrest.pas.managers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.ias.pas.hotelroom.pasrest.dao.HotelRoomDao;
-import pl.ias.pas.hotelroom.pasrest.dao.ReservationDao;
-import pl.ias.pas.hotelroom.pasrest.exceptions.exceptionstouseinfuturethenrefactortoremovethatstupidlongpackagename.ResourceAllocated;
-import pl.ias.pas.hotelroom.pasrest.exceptions.exceptionstouseinfuturethenrefactortoremovethatstupidlongpackagename.ResourceAlreadyExistException;
-import pl.ias.pas.hotelroom.pasrest.exceptions.exceptionstouseinfuturethenrefactortoremovethatstupidlongpackagename.ResourceNotFoundException;
-import pl.ias.pas.hotelroom.pasrest.exceptions.exceptionstouseinfuturethenrefactortoremovethatstupidlongpackagename.ValidationException;
-import pl.ias.pas.hotelroom.pasrest.model.HotelRoom;
+import org.springframework.web.context.annotation.RequestScope;
+import pl.ias.pas.hotelroom.springrest.pas.dao.HotelRoomDao;
+import pl.ias.pas.hotelroom.springrest.pas.dao.ReservationDao;
+import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceAllocated;
+import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceAlreadyExistException;
+import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceNotFoundException;
+import pl.ias.pas.hotelroom.springrest.pas.exceptions.ValidationException;
+import pl.ias.pas.hotelroom.springrest.pas.model.HotelRoom;
 
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 
-@RequestScoped
+
+@RequestScope
 @Autowired
 public class HotelRoomManager {
 
