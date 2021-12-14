@@ -11,18 +11,17 @@ import pl.ias.pas.hotelroom.springrest.pas.exceptions.ValidationException;
 import pl.ias.pas.hotelroom.springrest.pas.model.HotelRoom;
 
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 
 
 @RequestScope
-@Autowired
+
 public class HotelRoomManager {
 
-    @Inject
+    @Autowired
     private HotelRoomDao roomDao;
-    @Inject
+    @Autowired
     private ReservationDao reservationDao;
 
     public HotelRoom getRoomByNumber(int number) {

@@ -1,5 +1,6 @@
 package pl.ias.pas.hotelroom.springrest.pas.managers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.ias.pas.hotelroom.springrest.pas.dao.HotelRoomDao;
 import pl.ias.pas.hotelroom.springrest.pas.dao.ReservationDao;
@@ -13,7 +14,6 @@ import pl.ias.pas.hotelroom.springrest.pas.model.Reservation;
 import pl.ias.pas.hotelroom.springrest.pas.model.User;
 
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,11 +22,11 @@ import java.util.UUID;
 @RequestScope
 public class ReservationManager {
 
-    @Inject
+    @Autowired
     private UserDao userDao;
-    @Inject
+    @Autowired
     private ReservationDao reservationDao;
-    @Inject
+    @Autowired
     private HotelRoomDao roomDao;
 
     public Reservation getReservationById(UUID id) {

@@ -1,5 +1,6 @@
 package pl.ias.pas.hotelroom.springrest.pas.managers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.ias.pas.hotelroom.springrest.pas.dao.UserDao;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.IDontKnowException;
@@ -9,7 +10,7 @@ import pl.ias.pas.hotelroom.springrest.pas.exceptions.ValidationException;
 import pl.ias.pas.hotelroom.springrest.pas.model.User;
 
 
-import javax.inject.Inject;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ import java.util.UUID;
 public class UserManager {
 
 
-    @Inject
+    @Autowired
     private UserDao userDao;
 
     public UserManager() {}
