@@ -1,5 +1,6 @@
 package pl.ias.pas.hotelroom.springrest.pas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -57,12 +58,12 @@ public class Reservation {
         this.roomId = roomId;
     }
 
-    @JsonbTransient
+    @JsonIgnore
     public Date getActualStartDate() {
         return new Date(startDate);
     }
 
-    @JsonbTransient
+    @JsonIgnore
     public Date getActualEndDate() {
         return new Date(endDate);
     }
@@ -78,21 +79,21 @@ public class Reservation {
 
     // nwm co zrobić, żeby te Depracted byłoy ignorowane przy beanach
     @Deprecated
-    @JsonbTransient
+    @JsonIgnore
     public void setActive(boolean active) {
         return;
     }
     @Deprecated
-    @JsonbTransient
+    @JsonIgnore
     public void setActualStartDate(String date) {
         return;
     }
     @Deprecated
-    @JsonbTransient
+    @JsonIgnore
     public void setActualEndDate(String date) {
         return;
     }
-    @JsonbTransient
+    @JsonIgnore
     public boolean isActive() {
         if (this.endDate == 0) {
             return true;

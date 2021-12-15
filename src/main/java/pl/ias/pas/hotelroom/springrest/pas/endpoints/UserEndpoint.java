@@ -28,6 +28,11 @@ public class UserEndpoint {
     // przykładowe zapytanie tworzące nowego użytkownika
     // http POST localhost:8080/PASrest-1.0-SNAPSHOT/api/user login=test password=test name=test surname=test
 
+    @GetMapping("/")
+    public String test(){
+        return "test";
+    }
+
     //CREATE\\
     @PostMapping(value = "/", consumes = "application/json")
     public ResponseEntity createUser(User user) {
