@@ -1,6 +1,8 @@
 package pl.ias.pas.hotelroom.springrest.pas.managers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.ias.pas.hotelroom.springrest.pas.dao.HotelRoomDao;
 import pl.ias.pas.hotelroom.springrest.pas.dao.ReservationDao;
@@ -16,7 +18,6 @@ import java.util.UUID;
 
 
 @RequestScope
-
 public class HotelRoomManager {
 
     @Autowired

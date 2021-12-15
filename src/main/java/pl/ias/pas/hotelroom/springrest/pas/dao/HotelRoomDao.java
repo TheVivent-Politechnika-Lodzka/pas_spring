@@ -2,6 +2,7 @@ package pl.ias.pas.hotelroom.springrest.pas.dao;
 
 
 
+import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.ApplicationScope;
 import pl.ias.pas.hotelroom.springrest.pas.model.HotelRoom;
 
