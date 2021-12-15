@@ -10,6 +10,16 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <packaging>jar</packaging>
+
+    <distributionManagement>
+        <repository>
+            <id>internal</id>
+            <name>file system</name>
+            <url>file://${project.build.directory}/build/</url>
+        </repository>
+    </distributionManagement>
+
     <groupId>pl.ias.pas.hotelroom.springrest</groupId>
     <artifactId>Pas</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -43,6 +53,8 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>pl.ias.pas.hotelroom.springrest.pas.PasApplication</mainClass>
+                    <layout>ZIP</layout>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

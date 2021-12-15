@@ -112,7 +112,7 @@ public class UserEndpoint {
 
 
     @GetMapping(value = "/all", produces = "application/json")
-    public ResponseEntity<?> getAllUsers(@RequestParam("scope") String scope) {
+    public ResponseEntity<?> getAllUsers(@RequestParam(required = false, value = "scope") String scope) {
         if (scope == null) scope = "active";
         List<User> toReturn;
         switch (scope) {
