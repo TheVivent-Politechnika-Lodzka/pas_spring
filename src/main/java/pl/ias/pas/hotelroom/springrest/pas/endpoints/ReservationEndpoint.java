@@ -29,8 +29,8 @@ public class ReservationEndpoint {
 
 
     //CREATE\\
-    @PostMapping(value = "/", consumes = "application/json")
-    public ResponseEntity createReservation(Reservation reservation) {
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity createReservation(@RequestBody Reservation reservation) {
 //        return Response.ok().build();
 
         UUID createdReservation;
@@ -49,7 +49,7 @@ public class ReservationEndpoint {
 
     //UPDATE\\
     @PostMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity updateReservation(@PathVariable("id") String id, Reservation reservation) {
+    public ResponseEntity updateReservation(@PathVariable("id") String id, @RequestBody Reservation reservation) {
         try {
             Reservation oldReservation = reservationManager.getReservationById(UUID.fromString(id));
             reservationManager.updateReservation(oldReservation, reservation);

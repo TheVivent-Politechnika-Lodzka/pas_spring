@@ -1,5 +1,6 @@
 package pl.ias.pas.hotelroom.springrest.pas.dao;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
 import pl.ias.pas.hotelroom.springrest.pas.model.User;
 
@@ -7,6 +8,7 @@ import pl.ias.pas.hotelroom.springrest.pas.model.User;
 import java.util.*;
 
 @ApplicationScope
+@Component
 public class UserDao {
 
     private List<User> usersRepository = Collections.synchronizedList(new ArrayList<>());

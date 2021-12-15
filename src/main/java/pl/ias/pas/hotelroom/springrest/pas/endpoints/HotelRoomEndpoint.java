@@ -28,8 +28,8 @@ public class HotelRoomEndpoint {
     // http POST localhost:8080/PASrest-1.0-SNAPSHOT/api/room roomNumber=2 price=100 capacity=300 description=cosy
 
     //CREATE\\
-    @PostMapping(value="/", consumes = "application/json")
-    public ResponseEntity createRoom(HotelRoom room) {
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity createRoom(@RequestBody HotelRoom room) {
         UUID createdRoom;
         try {
             createdRoom = roomManager.addRoom(room);
@@ -43,7 +43,7 @@ public class HotelRoomEndpoint {
 
     //UPDATE\\
     @PostMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity updateRoom(@PathVariable("id") String id, HotelRoom room) {
+    public ResponseEntity updateRoom(@PathVariable("id") String id, @RequestBody HotelRoom room) {
         try {
             roomManager.updateRoom(roomManager.getRoomById(UUID.fromString(id)), room);
         } catch (ValidationException e) {

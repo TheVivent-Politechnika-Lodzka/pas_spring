@@ -28,14 +28,9 @@ public class UserEndpoint {
     // przykładowe zapytanie tworzące nowego użytkownika
     // http POST localhost:8080/PASrest-1.0-SNAPSHOT/api/user login=test password=test name=test surname=test
 
-    @GetMapping("/")
-    public String test(){
-        return "test";
-    }
-
     //CREATE\\
-    @PostMapping(value = "/", consumes = "application/json")
-    public ResponseEntity createUser(User user) {
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity createUser(@RequestBody User user) {
         UUID createdUser;
         try {
             createdUser = userManager.addUser(user);
@@ -52,7 +47,7 @@ public class UserEndpoint {
 
     //UPDATE\\
     @PostMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity updateUser(@PathVariable("id") String id, User user) {
+    public ResponseEntity updateUser(@PathVariable("id") String id, @RequestBody User user) {
         try {
             UUID oldUser = UUID.fromString(id);
             userManager.updateUser(oldUser, user);
@@ -75,7 +70,7 @@ public class UserEndpoint {
     }
 
     //DELETE\\
-    @DeleteMapping(value = "/{id}", consumes = "application/json")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity archiveUser(@PathVariable("id") String id) {
         try {
             userManager.removeUser(UUID.fromString(id));

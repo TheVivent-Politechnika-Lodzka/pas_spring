@@ -1,6 +1,7 @@
 package pl.ias.pas.hotelroom.springrest.pas.managers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.ias.pas.hotelroom.springrest.pas.dao.UserDao;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.IDontKnowException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RequestScope
+@Component
 public class UserManager {
 
 

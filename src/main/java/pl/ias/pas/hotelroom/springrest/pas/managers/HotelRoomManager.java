@@ -18,6 +18,7 @@ import java.util.UUID;
 
 
 @RequestScope
+@Component
 public class HotelRoomManager {
 
     @Autowired

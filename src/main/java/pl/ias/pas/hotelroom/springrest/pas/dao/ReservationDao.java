@@ -1,5 +1,6 @@
 package pl.ias.pas.hotelroom.springrest.pas.dao;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.IDontKnowException;
 import pl.ias.pas.hotelroom.springrest.pas.model.Reservation;
@@ -10,6 +11,7 @@ import java.sql.Date;
 
 
 @ApplicationScope
+@Component
 public class ReservationDao {
 
     private List<Reservation> reservationsRepository = Collections.synchronizedList(new ArrayList<>());

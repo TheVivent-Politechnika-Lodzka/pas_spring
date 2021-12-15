@@ -2,6 +2,7 @@ package pl.ias.pas.hotelroom.springrest.pas.dao;
 
 
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.ApplicationScope;
 import pl.ias.pas.hotelroom.springrest.pas.model.HotelRoom;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @ApplicationScope
+@Component
 public class HotelRoomDao {
 
     private List<HotelRoom> roomsRepository = Collections.synchronizedList(new ArrayList<>());
