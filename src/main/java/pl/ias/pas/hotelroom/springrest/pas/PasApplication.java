@@ -13,7 +13,7 @@ import pl.ias.pas.hotelroom.springrest.pas.managers.UserManager;
 public class PasApplication {
 
     public static void main(String[] args) {
-        System.setProperty("server.servlet.context-path", "/test/api");
+        System.setProperty("server.servlet.context-path", "/api");
         SpringApplication.run(PasApplication.class, args);
     }
 
