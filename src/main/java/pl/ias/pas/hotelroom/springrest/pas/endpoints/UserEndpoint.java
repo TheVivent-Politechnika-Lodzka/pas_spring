@@ -12,6 +12,7 @@ import pl.ias.pas.hotelroom.springrest.pas.exceptions.ValidationException;
 import pl.ias.pas.hotelroom.springrest.pas.managers.UserManager;
 import pl.ias.pas.hotelroom.springrest.pas.model.User;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -30,53 +31,34 @@ public class UserEndpoint {
 
     //CREATE\\
     @PostMapping(consumes = "application/json")
-    public ResponseEntity createUser(@RequestBody User user) {
-        UUID createdUser;
-        try {
-            createdUser = userManager.addUser(user);
-        }catch (ValidationException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (ResourceAlreadyExistException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (IDontKnowException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+    public ResponseEntity createUser(@Valid @RequestBody User user) {
+        UUID createdUser = userManager.addUser(user);
 
         return ResponseEntity.created(URI.create("/user/" + createdUser)).build();
     }
 
     //UPDATE\\
     @PostMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity updateUser(@PathVariable("id") String id, @RequestBody User user) {
-        try {
-            UUID oldUser = UUID.fromString(id);
-            userManager.updateUser(oldUser, user);
-        } catch (ValidationException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity updateUser(@PathVariable("id") String userToUpdate, @RequestBody User update) {
+        UUID id = UUID.fromString(userToUpdate);
+        userManager.updateUser(id, update);
+
         return ResponseEntity.ok().build();
     }
 
+    //ACTIVATE\\
     @RequestMapping(value = "/activate/{id}", method = RequestMethod.HEAD)
     public ResponseEntity activateUser(@PathVariable("id") String id) {
-        try {
-            userManager.activateUser(UUID.fromString(id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        userManager.activateUser(UUID.fromString(id));
+
         return ResponseEntity.ok().build();
     }
 
     //DELETE\\
     @DeleteMapping(value = "/{id}")
     public ResponseEntity archiveUser(@PathVariable("id") String id) {
-        try {
-            userManager.removeUser(UUID.fromString(id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        userManager.archiveUser(UUID.fromString(id));
+
         return ResponseEntity.ok().build();
     }
 
@@ -85,35 +67,26 @@ public class UserEndpoint {
     public ResponseEntity<User> getUserById(@PathVariable("id") String id) {
         User user = userManager.getUserById(UUID.fromString(id), false);
 
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
         return ResponseEntity.ok(user);
     }
 
 
-    @GetMapping(value = "/search", produces = "application/json")
+    @GetMapping(value = "/search/{login}", produces = "application/json")
     public ResponseEntity<List<User>> getUsersContainsLogin(@PathVariable("login") String login) {
         return ResponseEntity.ok(userManager.searchUsers(login));
-
     }
 
     @GetMapping(value = "/login/{login}", produces = "application/json")
     public ResponseEntity<User> getUserByLogin(@PathVariable("login") String login) {
         User user = userManager.getUserByLogin(login);
 
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
         return ResponseEntity.ok(user);
-
     }
 
 
     @GetMapping(value = "/all", produces = "application/json")
     public ResponseEntity<?> getAllUsers(@RequestParam(required = false, value = "scope") String scope) {
-        if (scope == null) scope = "active";
+        if ("".equals(scope)) scope = "active";
         List<User> toReturn;
         switch (scope) {
             case "active":

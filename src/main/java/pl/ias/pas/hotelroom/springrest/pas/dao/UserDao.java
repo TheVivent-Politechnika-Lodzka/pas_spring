@@ -131,47 +131,11 @@ public class UserDao {
         return result;
     }
 
-//    synchronized public List<User> searchUsers(String login) {
-//        ArrayList<User> result = new ArrayList<>();
-//        String searchLogin = login.toLowerCase(Locale.ROOT);
-//        for (User user : usersRepository) {
-//            String currentLogin = user.getLogin().toLowerCase(Locale.ROOT);
-//            if (currentLogin.contains(searchLogin)) {
-//                result.add(user);
-//            }
-//        }
-//        return result;
-//    }
-//
-//    synchronized public List<User> getAllUsers() {
-//        List<User> result = new ArrayList<>();
-//        for (User user : usersById.values()) {
-//            result.add(new User(user));
-//        }
-//        return result;
-//    }
-//
-//    synchronized public List<User> getActiveUsers(){
-//        ArrayList<User> result = new ArrayList<>();
-//        for (User user : usersRepository) {
-//            if(user.isActive()) {
-//                result.add(user);
-//            }
-//        }
-//        return result;
-//    }
-//
-//    synchronized public List<User> getArchivedUsers(){
-//        ArrayList<User> result = new ArrayList<>();
-//        for (User user : usersRepository) {
-//            if(!user.isActive()) {
-//                result.add(user);
-//            }
-//        }
-//        return result;
-//    }
-
     synchronized public void activateUser(UUID id) {
-        usersById.get(id).setActive(true);
+        if (usersById.containsKey(id)) {
+            usersById.get(id).setActive(true);
+        } else {
+            throw new ResourceNotFoundException("User with id " + id + " does not exist");
+        }
     }
 }

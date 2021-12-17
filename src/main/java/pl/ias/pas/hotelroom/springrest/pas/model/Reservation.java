@@ -23,7 +23,6 @@ public class Reservation {
     private UUID id;
 
     @Getter @Setter
-    @NotNull
     private Instant startDate;
 
     @Getter @Setter
@@ -73,6 +72,13 @@ public class Reservation {
 
     public void setEndDate(String endDate) {
         this.endDate = Instant.parse(endDate);
+    }
+
+    public boolean isActive() {
+        if (endDate != null) {
+            return endDate.isAfter(Instant.now());
+        }
+        return true;
     }
 
     //    public void setUserId(String userId) {

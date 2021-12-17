@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.IDontKnowException;
-import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceAllocated;
+import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceAllocatedException;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceNotFoundException;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.ValidationException;
 import pl.ias.pas.hotelroom.springrest.pas.managers.ReservationManager;
 import pl.ias.pas.hotelroom.springrest.pas.model.Reservation;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -30,45 +30,25 @@ public class ReservationEndpoint {
 
     //CREATE\\
     @PostMapping(consumes = "application/json")
-    public ResponseEntity createReservation(@RequestBody Reservation reservation) {
-//        return Response.ok().build();
-
-        UUID createdReservation;
-        try {
-            createdReservation = reservationManager.addReservation(reservation);
-        } catch (ValidationException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ResourceAllocated resourceAllocated) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(resourceAllocated.getMessage());
-        }
+    public ResponseEntity createReservation(@Valid @RequestBody Reservation reservation) {
+        UUID createdReservation = reservationManager.addReservation(reservation);
 
         return ResponseEntity.created(URI.create("/reservation/" + createdReservation)).build();
     }
 
     //UPDATE\\
     @PostMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity updateReservation(@PathVariable("id") String id, @RequestBody Reservation reservation) {
-        try {
-            Reservation oldReservation = reservationManager.getReservationById(UUID.fromString(id));
-            reservationManager.updateReservation(oldReservation, reservation);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity updateReservation(@PathVariable("id") String reservationToUpdate, @RequestBody Reservation update) {
+        UUID id = UUID.fromString(reservationToUpdate);
+        reservationManager.updateReservation(id, update);
+
         return ResponseEntity.ok().build();
     }
 
-    //DELETE\\
+    //DELETE\\ // TODO przemyśleć czy to jest dobrze
     @DeleteMapping(value = "/{id}")
     public ResponseEntity archiveReservation(@PathVariable("id") String id) {
-        try {
-            reservationManager.archiveReservation(UUID.fromString(id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IDontKnowException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        reservationManager.endReseravation(UUID.fromString(id));
 
         return ResponseEntity.ok().build();
     }
@@ -78,10 +58,6 @@ public class ReservationEndpoint {
     public ResponseEntity<Reservation> getReservationById(@PathVariable("id") String id) {
         Reservation reservation = reservationManager.getReservationById(UUID.fromString(id));
 
-        if(reservation == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
         return ResponseEntity.ok(reservation);
     }
 
@@ -90,9 +66,12 @@ public class ReservationEndpoint {
         return ResponseEntity.ok(reservationManager.getAllReservations());
     }
 
-    //BYID\\
-    @GetMapping(value = "/search", produces = "application/json")
-    public ResponseEntity<List<Reservation>> getActiveReservationByClient(@PathVariable("clientId") String clientId, @RequestParam("archived") boolean archived) {
+    //SEARCH\\
+    @GetMapping(value = "/search/{clientId}", produces = "application/json")
+    public ResponseEntity<List<Reservation>> getActiveReservationByClient(
+            @PathVariable("clientId") String clientId,
+            @RequestParam(value = "archived", required = false, defaultValue = "false") boolean archived
+    ) {
         UUID clienUUID = UUID.fromString(clientId);
         List<Reservation> reservations = reservationManager.searchReservations(clienUUID, archived);
         return ResponseEntity.ok(reservations);

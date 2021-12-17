@@ -4,15 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.ias.pas.hotelroom.springrest.pas.dao.UserDao;
-import pl.ias.pas.hotelroom.springrest.pas.exceptions.IDontKnowException;
-import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceAlreadyExistException;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceNotFoundException;
-import pl.ias.pas.hotelroom.springrest.pas.exceptions.ValidationException;
 import pl.ias.pas.hotelroom.springrest.pas.model.User;
 
 
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @RequestScope
@@ -30,7 +28,9 @@ public class UserManager {
     }
 
     public List<User> searchUsers(String login) {
-        return userDao.searchUsers(login);
+        return userDao.customSearch(
+                (user) -> user.getLogin().toLowerCase().contains(login.toLowerCase())
+        );
     }
 
     public List<User> getAllUsers(){
@@ -38,95 +38,53 @@ public class UserManager {
     }
 
     public List<User> getAllActiveUsers() {
-        return userDao.getActiveUsers();
+        return userDao.customSearch((user)-> user.isActive());
     }
 
     public List<User> getAllArchivedUsers() {
-        return userDao.getArchivedUsers();
+        return userDao.customSearch((user)-> !user.isActive());
     }
 
     public User getUserById(UUID id, boolean includeArchived){
-        for (User user : userDao.getActiveUsers()) {
-            if (user.getId().equals(id)) {
-                return user;
-            }
-        }
-
-        // jeśli nie ma użytkownika w bazie, to sprawdzamy czy może jest w archiwum
-        if (! includeArchived) return null;
-        for (User user : userDao.getArchivedUsers()) {
-            if (user.getId().equals(id)) {
-                return user;
-            }
-        }
-
-        return null;
-    }
-
-    public UUID addUser(User user) throws ValidationException, ResourceAlreadyExistException, IDontKnowException {
-
-
-        // waliduj wszystko
-        user.validate();
-
-        // sprawdzanie unikalności loginu i id
-        UUID id = UUID.randomUUID();
-        for (User currentUser : getAllUsers()) {
-            if (currentUser.getLogin().equals(user.getLogin())) {
-                throw new ResourceAlreadyExistException("User with this login already exists");
-            }
-            if (currentUser.getId().equals(id)) {
-                throw new IDontKnowException("ID error, please try again");
-            }
-        }
-
-        // stworzenie nowego użytkownika
-        User newUser = new User(id, user.getLogin(), user.getPassword(), user.getName(), user.getSurname());
-
-        return userDao.addUser(newUser);
-    }
-
-    public void removeUser(UUID id) throws ResourceNotFoundException {
         User user = userDao.getUserById(id);
-        //czy uzytkownik jest w bazie
-        if (!userDao.getActiveUsers().contains(user)) {
+
+        if ( !includeArchived && !user.isActive() ) {
             throw new ResourceNotFoundException("User does not exist");
         }
 
-        userDao.removeUser(user);
+        return user;
     }
 
-    public void activateUser(UUID id) throws ResourceNotFoundException {
-        User user = userDao.getUserById(id);
-        //czy uzytkownik jest w bazie
-        if (user == null) {
-            throw new ResourceNotFoundException("User does not exist");
-        }
+    public UUID addUser(User user) {
+        return userDao.addUser(user);
+    }
 
+    public void archiveUser(UUID id) {
+        userDao.archiveUser(id);
+    }
+
+    public void activateUser(UUID id) {
         userDao.activateUser(id);
     }
 
-    public void updateUser(UUID oldUserId, User user) throws ResourceNotFoundException, ValidationException {
+    public void updateUser(UUID userToUpdate, User update) {
 
-        User oldUser = userDao.getUserById(oldUserId);
-        if (oldUser == null) {
-            throw new ResourceNotFoundException("User does not exist");
-        }
+        // TODO zrobić jakąś walidację
 
-        if (user.getLogin() != null) {
-            user.validateLogin();
-        }
-        if (user.getPassword() != null) {
-            user.validatePassword();
-        }
-        if (user.getName() != null) {
-            user.validateName();
-        }
-        if (user.getSurname() != null) {
-            user.validateSurname();
-        }
+//        if (update.getLogin() != null) {
+//            update.validateLogin();
+//        }
+//        if (update.getPassword() != null) {
+//            update.validatePassword();
+//        }
+//        if (update.getName() != null) {
+//            update.validateName();
+//        }
+//        if (update.getSurname() != null) {
+//            update.validateSurname();
+//        }
 
-        userDao.updateUser(oldUser, user);
+        userDao.updateUser(userToUpdate, update);
     }
 
 }
