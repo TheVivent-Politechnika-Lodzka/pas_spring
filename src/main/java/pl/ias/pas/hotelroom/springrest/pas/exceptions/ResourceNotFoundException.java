@@ -1,6 +1,6 @@
 package pl.ias.pas.hotelroom.springrest.pas.exceptions;
 
-public class ResourceNotFoundException extends Exception {
+public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException() {
     }
 

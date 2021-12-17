@@ -1,72 +1,95 @@
 package pl.ias.pas.hotelroom.springrest.pas.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.ValidationException;
 
+import javax.validation.constraints.NotNull;
 import java.beans.BeanProperty;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
-@Data
+//@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 public class Reservation {
 
     @EqualsAndHashCode.Include
+    @Getter
     private UUID id;
-    private Long startDate;
-    private Long endDate;
+
+    @Getter @Setter
+    @NotNull
+    private Instant startDate;
+
+    @Getter @Setter
+    private Instant endDate;
+
+    @Getter @Setter
+    @NotNull
     private UUID userId;
+
+    @Getter @Setter
+    @NotNull
     private UUID roomId;
 
-    public Reservation(UUID id, UUID userId, UUID roomId, Long startDate, Long endDate) {
-        this(id, userId, roomId, startDate);
+    public Reservation(Instant startDate, Instant endDate, UUID userId, UUID roomId) {
+        this.id = UUID.randomUUID();
+        this.startDate = startDate;
         this.endDate = endDate;
+        this.userId = userId;
+        this.roomId = roomId;
     }
 
-    public Reservation(UUID id, UUID userId, UUID roomId, Long startDate) {
-        this(id, userId, roomId);
+    public Reservation(Instant startDate, UUID userId, UUID roomId) {
+        this.startDate = startDate;
+        this.userId = userId;
+        this.roomId = roomId;
+    }
+
+    public Reservation(Reservation reservation) {
+        this.id = reservation.getId();
+        this.startDate = reservation.getStartDate();
+        this.endDate = reservation.getEndDate();
+        this.userId = reservation.getUserId();
+        this.roomId = reservation.getRoomId();
+    }
+
+    public void setStartDate(Instant startDate) {
         this.startDate = startDate;
     }
 
-    public Reservation(UUID id, UUID userId, UUID roomId) {
-        this.id = id;
-        this.startDate = System.currentTimeMillis();
-        this.endDate = null;
-        this.userId = userId;
-        this.roomId = roomId;
+    public void setEndDate(Instant endDate) {
+        this.endDate = endDate;
     }
 
-    public void setUserId(String userId) {
-        this.userId = UUID.fromString(userId);
+    public void setStartDate(String startDate) {
+        this.startDate = Instant.parse(startDate);
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setEndDate(String endDate) {
+        this.endDate = Instant.parse(endDate);
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = UUID.fromString(roomId);
-    }
-
-    public void setRoomId(UUID roomId) {
-        this.roomId = roomId;
-    }
-
-    @JsonIgnore
-    public Date getActualStartDate() {
-        return new Date(startDate);
-    }
-
-    @JsonIgnore
-    public Date getActualEndDate() {
-        return new Date(endDate);
-    }
+    //    public void setUserId(String userId) {
+//        this.userId = UUID.fromString(userId);
+//    }
+//
+//    public void setUserId(UUID userId) {
+//        this.userId = userId;
+//    }
+//
+//    public void setRoomId(String roomId) {
+//        this.roomId = UUID.fromString(roomId);
+//    }
+//
+//    public void setRoomId(UUID roomId) {
+//        this.roomId = roomId;
+//    }
 
 
 
@@ -77,34 +100,9 @@ public class Reservation {
 //        this.endDate = endDate;
 //    }
 
-    // nwm co zrobić, żeby te Depracted byłoy ignorowane przy beanach
-    @Deprecated
-    @JsonIgnore
-    public void setActive(boolean active) {
-        return;
-    }
-    @Deprecated
-    @JsonIgnore
-    public void setActualStartDate(String date) {
-        return;
-    }
-    @Deprecated
-    @JsonIgnore
-    public void setActualEndDate(String date) {
-        return;
-    }
-    @JsonIgnore
-    public boolean isActive() {
-        if (this.endDate == 0) {
-            return true;
-        }
-        return this.startDate < this.endDate;
-    }
-
     public void validate() throws ValidationException {
-        if (endDate == 0) return;
-        if (startDate > endDate) {
-            throw new ValidationException("End date cannot be before start date");
+        if(startDate.isAfter(endDate)) {
+            throw new ValidationException("Start date must be before end date");
         }
     }
 

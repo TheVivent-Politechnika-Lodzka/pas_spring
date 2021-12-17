@@ -1,6 +1,6 @@
 package pl.ias.pas.hotelroom.springrest.pas.exceptions;
 
-public class ResourceAlreadyExistException extends Exception {
+public class ResourceAlreadyExistException extends RuntimeException {
     public ResourceAlreadyExistException() {
     }
 

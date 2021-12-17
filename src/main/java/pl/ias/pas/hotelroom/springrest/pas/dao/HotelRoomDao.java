@@ -2,65 +2,124 @@ package pl.ias.pas.hotelroom.springrest.pas.dao;
 
 
 
+import com.pushtorefresh.javac_warning_annotation.Warning;
+import lombok.Synchronized;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.ApplicationScope;
+import pl.ias.pas.hotelroom.springrest.pas.exceptions.IDontKnowException;
+import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceAlreadyExistException;
+import pl.ias.pas.hotelroom.springrest.pas.exceptions.ResourceNotFoundException;
 import pl.ias.pas.hotelroom.springrest.pas.model.HotelRoom;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Predicate;
 
 @ApplicationScope
-@Component
+@Repository
 public class HotelRoomDao {
 
-    private List<HotelRoom> roomsRepository = Collections.synchronizedList(new ArrayList<>());
+//    private List<HotelRoom> roomsRepository = new ArrayList<HotelRoom>();
+    private Map<UUID, HotelRoom> roomsById = new HashMap<>();
+    private Map<Integer, HotelRoom> roomsByNumber = new HashMap<>();
 
-    public UUID addHotelRoom(HotelRoom room) {
-        roomsRepository.add(room);
-        return room.getId();
-    }
-
-    public void updateHotelRoom(HotelRoom oldRoom, HotelRoom room) {
-        if(room.getRoomNumber() > 0) {
-            oldRoom.setRoomNumber(room.getRoomNumber());
+    @Warning("This method is for testing only !!!")
+    synchronized public void deleteRoom(UUID roomId) {
+        if(roomsById.containsKey(roomId)){
+            roomsByNumber.remove(
+                    roomsById.get(roomId).getRoomNumber()
+            );
+            roomsById.remove(roomId);
         }
-        if(room.getPrice() > 0) {
-            oldRoom.setPrice(room.getPrice());
-        }
-        if(room.getCapacity() > 0) {
-            oldRoom.setCapacity(room.getCapacity());
-        }
-        if(room.getDescription() != null) {
-            oldRoom.setDescription(room.getDescription());
+        else {
+            throw new ResourceNotFoundException("Room with id: " + roomId + " not found");
         }
     }
 
-    public void removeRoom(HotelRoom room) {
-        roomsRepository.remove(room);
+    synchronized public UUID addHotelRoom(HotelRoom room) {
+        //wykonaj kopię pokoju, aby nie były możliwe zmiany w obiekcie
+        HotelRoom newRoom = new HotelRoom(room.getRoomNumber(), room.getPrice(), room.getCapacity(), room.getDescription());
+
+        if (roomsById.containsKey(newRoom.getId())) {
+            throw new ResourceAlreadyExistException("Room with id " + newRoom.getId() + " already exist");
+        }
+        if (roomsByNumber.containsKey(newRoom.getRoomNumber())) {
+            throw new ResourceAlreadyExistException("Room with number " + newRoom.getRoomNumber() + " already exist");
+        }
+
+        roomsById.put(newRoom.getId(), newRoom);
+        roomsByNumber.put(newRoom.getRoomNumber(), newRoom);
+        return newRoom.getId();
     }
 
-    public HotelRoom getRoomById(UUID id) {
-        for (HotelRoom room : roomsRepository) {
-            if (room.getId().equals(id)) {
-                return room;
+    synchronized public void updateHotelRoom(UUID roomToUpdate, HotelRoom update) {
+        HotelRoom room = roomsById.get(roomToUpdate);
+
+        if (room == null) {
+            throw new ResourceNotFoundException("Room with id " + roomToUpdate + " not found");
+        }
+        if (roomsByNumber.containsKey(update.getRoomNumber())) {
+            throw new ResourceAlreadyExistException("Room with number " + update.getRoomNumber() + " already exist");
+        }
+
+        if(update.getRoomNumber() > 0) {
+            // usuń pokój z mapy pokojów po numerze
+            roomsByNumber.remove(room.getRoomNumber());
+
+            // ustaw nowy numer pokoju
+            room.setRoomNumber(update.getRoomNumber());
+            // dodaj pokój do mapy pokojów po numerze
+            roomsByNumber.put(update.getRoomNumber(), room);
+        }
+        if(update.getPrice() > 0) {
+            room.setPrice(update.getPrice());
+        }
+        if(update.getCapacity() > 0) {
+            room.setCapacity(update.getCapacity());
+        }
+        if(update.getDescription() != null) {
+            room.setDescription(update.getDescription());
+        }
+
+    }
+
+    synchronized public void archiveRoom(UUID roomId) {
+        if (roomsById.containsKey(roomId)) {
+            roomsById.get(roomId).setActive(false);
+        } else {
+            throw new ResourceNotFoundException("Room with id " + roomId + " not found");
+        }
+    }
+
+    synchronized public HotelRoom getRoomById(UUID id) {
+        HotelRoom room = roomsById.get(id);
+        if (room == null) {
+            throw new ResourceNotFoundException("Room with id " + id + " not found");
+        }
+        return new HotelRoom(room);
+    }
+
+    synchronized public HotelRoom getRoomByNumber(int number) {
+        HotelRoom room = roomsByNumber.get(number);
+        if (room == null) {
+            throw new ResourceNotFoundException("Room with number " + number + " not found");
+        }
+        return new HotelRoom(room);
+    }
+
+    synchronized public List<HotelRoom> getAllRooms() {
+        List<HotelRoom> rooms = new ArrayList<HotelRoom>(roomsById.size());
+        roomsById.forEach((key, room) -> rooms.add(new HotelRoom(room)));
+        return rooms;
+    }
+
+    synchronized public List<HotelRoom> customSearch(Predicate<HotelRoom> lambda) {
+        List<HotelRoom> rooms = new ArrayList<HotelRoom>(roomsById.size());
+        roomsById.forEach((key, room) -> {
+            if(lambda.test(room)) {
+                rooms.add(new HotelRoom(room));
             }
-        }
-        return null;
-    }
-
-    public HotelRoom getRoomByNumber(int number) {
-        for (HotelRoom room : roomsRepository) {
-            if (room.getRoomNumber() == number) {
-                return room;
-            }
-        }
-        return null;
-    }
-
-    public List<HotelRoom> getAllRooms() {
-        return roomsRepository;
+        });
+        return rooms;
     }
 }

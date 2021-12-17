@@ -1,6 +1,6 @@
 package pl.ias.pas.hotelroom.springrest.pas.exceptions;
 
-public class IDontKnowException extends Exception {
+public class IDontKnowException extends RuntimeException {
     public IDontKnowException() {
     }
 

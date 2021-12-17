@@ -1,36 +1,66 @@
 package pl.ias.pas.hotelroom.springrest.pas.model;
 
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import pl.ias.pas.hotelroom.springrest.pas.exceptions.ValidationException;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.UUID;
 
-@Data
+//@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-public class User {
+public class User{
 
     @EqualsAndHashCode.Include
+    @Getter
     private UUID id;
+
+    @Getter @Setter
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9]{3,20}$", message = "Login must be 3-20 characters long and contain only letters and numbers")
     private String login;
+
+    @Getter @Setter
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9]{3,20}$", message = "Password must be 3-20 characters long and contain only letters and numbers")
     private String password;
+
+    @Getter @Setter
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z]{3,20}$", message = "First name must be 3-20 characters long and contain only letters")
     private String name;
+
+    @Getter @Setter
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z]{3,20}$", message = "Last name must be 3-20 characters long and contain only letters")
     private String surname;
+
+    @Getter @Setter
     private UserType userType = UserType.CLIENT;
+
+    @Getter @Setter
+    @JsonIgnore
     private boolean isActive = true;
 
-    // nadawanie id to odpowiedzialność repozytorium
-    // typ użytkownika to nadaje się potem (kto przy rejestracji od razu wybiera typ użytkownika? xD)
-    public User(UUID id, String login, String password, String name, String surname) {
-        this.id = id;
+    public User(String login, String password, String name, String surname) {
+        this.id = UUID.randomUUID();
         this.login = login;
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.userType = UserType.CLIENT;
+    }
+
+    public User(User user) {
+        this.id = user.getId();
+        this.login = user.getLogin();
+        this.password = user.getPassword();
+        this.name = user.getName();
+        this.surname = user.getSurname();
+        this.userType = user.getUserType();
+        this.isActive = user.isActive();
     }
 
     public void validateLogin() throws ValidationException {
@@ -65,4 +95,5 @@ public class User {
         validateSurname();
         validateUserType();
     }
+
 }
