@@ -61,7 +61,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>pl.ias.pas.hotelroom.springrest.pas.PasApplication</mainClass>
+                    <mainClass>pl.ias.pas.hotelroom.spring.rest.PasApplication</mainClass>
                     <layout>ZIP</layout>
                     <excludes>
                         <exclude>
