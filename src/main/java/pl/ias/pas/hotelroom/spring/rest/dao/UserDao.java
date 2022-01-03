@@ -55,8 +55,22 @@ public class UserDao {
         if (user == null) {
             throw new ResourceNotFoundException("User with id " + userToUpdate + " does not exist");
         }
-        if (usersByLogin.containsKey(update.getLogin())) {
+        if (!user.getLogin().equals(update.getLogin())
+                && usersByLogin.containsKey(update.getLogin())) {
             throw new ResourceAlreadyExistException("User with login " + update.getLogin() + " already exists");
+        }
+
+        if(update.getLogin() != null) {
+            update.validateLogin();
+        }
+        if(update.getPassword() != null) {
+            update.validatePassword();
+        }
+        if(update.getName() != null) {
+            update.validateName();
+        }
+        if(update.getSurname() != null) {
+            update.validateSurname();
         }
 
         if(update.getLogin() != null) {

@@ -42,7 +42,7 @@ public class User{
     private UserType userType = UserType.CLIENT;
 
     @Getter @Setter
-    @JsonIgnore
+//    @JsonIgnore
     private boolean isActive = true;
 
     public User(String login, String password, String name, String surname) {

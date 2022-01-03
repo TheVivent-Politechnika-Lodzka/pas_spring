@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import pl.ias.pas.hotelroom.spring.rest.exceptions.ResourceAllocatedException;
 import pl.ias.pas.hotelroom.spring.rest.dao.HotelRoomDao;
+import pl.ias.pas.hotelroom.spring.rest.exceptions.ResourceNotFoundException;
 import pl.ias.pas.hotelroom.spring.rest.model.HotelRoom;
 
 
@@ -24,7 +25,11 @@ public class HotelRoomManager {
     }
 
     public HotelRoom getRoomById(UUID id) {
-        return roomDao.getRoomById(id);
+        HotelRoom room = roomDao.getRoomById(id);
+        if (room.isActive() == false) {
+            throw new ResourceNotFoundException("Room with id " + id + " not found");
+        }
+        return room;
     }
 
     public UUID addRoom(HotelRoom room) {

@@ -81,7 +81,7 @@ public class UserEndpoint {
 
     @GetMapping(value = "/all", produces = "application/json")
     public ResponseEntity<?> getAllUsers(@RequestParam(required = false, value = "scope") String scope) {
-        if ("".equals(scope)) scope = "active";
+        if (scope == null || scope.isEmpty()) scope = "active";
         List<User> toReturn;
         switch (scope) {
             case "active":
