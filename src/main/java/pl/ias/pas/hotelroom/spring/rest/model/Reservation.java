@@ -21,11 +21,9 @@ public class Reservation {
     private Instant startDate;
 
     @Getter @Setter
-    @JsonIgnore
     private Instant endDate;
 
     @Getter @Setter
-    @JsonIgnore
     private User user;
 
     @Getter @Setter
@@ -41,24 +39,8 @@ public class Reservation {
         this.id = reservation.getId();
         this.startDate = reservation.getStartDate();
         this.endDate = reservation.getEndDate();
-        this.user = new User(reservation.getUser());
+        this.user = reservation.getUser().copy();
         this.hotelRoom = new HotelRoom(reservation.getHotelRoom());
-    }
-
-    public void setStartDate(Instant startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(Instant endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = Instant.parse(startDate);
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = Instant.parse(endDate);
     }
 
     public boolean isActive() {

@@ -12,10 +12,10 @@ import java.util.UUID;
 //@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-public class User{
+abstract public class User<T extends User<T>>{
 
     @EqualsAndHashCode.Include
-    @Getter
+    @Getter @Setter
     private UUID id;
 
     @Getter @Setter
@@ -39,9 +39,6 @@ public class User{
     private String surname;
 
     @Getter @Setter
-    private UserType userType = UserType.CLIENT;
-
-    @Getter @Setter
 //    @JsonIgnore
     private boolean isActive = true;
 
@@ -59,9 +56,12 @@ public class User{
         this.password = user.getPassword();
         this.name = user.getName();
         this.surname = user.getSurname();
-        this.userType = user.getUserType();
         this.isActive = user.isActive();
     }
+
+    abstract public T copy();
+
+    abstract public int getPermissionLevel();
 
     public void validateLogin() throws ValidationException {
         if(login.length() < 3 || login.length() > 20)
@@ -83,17 +83,12 @@ public class User{
             throw new ValidationException("Surname must be minimum 1 character");
     }
 
-    public void validateUserType() throws ValidationException {
-        if(userType == null)
-            throw new ValidationException("User type must be set");
-    }
 
     public void validate() throws ValidationException {
         validateLogin();
         validatePassword();
         validateName();
         validateSurname();
-        validateUserType();
     }
 
 }

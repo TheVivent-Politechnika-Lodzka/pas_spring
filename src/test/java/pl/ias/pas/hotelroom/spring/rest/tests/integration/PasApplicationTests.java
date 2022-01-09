@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import pl.ias.pas.hotelroom.spring.rest.model.Client;
 import pl.ias.pas.hotelroom.spring.rest.model.User;
 
 import java.util.UUID;
@@ -34,7 +35,7 @@ class PasApplicationTests {
     @Test
     void userCreation() throws Exception {
         String uri = "/user";
-        User user = new User(UUID.randomUUID(), "login1", "123123123", "Jan", "Kowalski");
+        User user = new Client(UUID.randomUUID(), "login1", "123123123", "Jan", "Kowalski");
 
         mockMvc.perform(post(uri)
                 .contentType("application/json")

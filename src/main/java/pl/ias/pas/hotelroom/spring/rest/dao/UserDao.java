@@ -46,7 +46,10 @@ public class UserDao {
         UUID id = UUID.randomUUID();
 
         //wykonaj kopię obiektu user, aby nie zmieniać obiektu w repozytorium
-        User newUser = new User(id, user.getLogin(), user.getPassword(), user.getName(), user.getSurname());
+//        User newUser = new User(id, user.getLogin(), user.getPassword(), user.getName(), user.getSurname());
+        User newUser = user.copy();
+        newUser.setId(id);
+
 
         if(usersById.containsKey(newUser.getId())) {
             throw new IllegalArgumentException("User with id " + newUser.getId() + " already exists");
@@ -105,7 +108,7 @@ public class UserDao {
         if(user == null) {
             throw new ResourceNotFoundException("User with id " + id + " does not exist");
         }
-        return new User(user);
+        return user.copy();
     }
 
     synchronized public User getUserByLogin(String login) {
@@ -113,7 +116,7 @@ public class UserDao {
         if(user == null) {
             throw new ResourceNotFoundException("User with login " + login + " does not exist");
         }
-        return new User(user);
+        return user.copy();
     }
 
     synchronized public List<User> customSearch(Predicate<User> lambda) {
@@ -121,7 +124,7 @@ public class UserDao {
 
         usersById.forEach((key, user) -> {
             if(lambda.test(user)) {
-                result.add(new User(user));
+                result.add(user.copy());
             }
         });
 
@@ -137,7 +140,7 @@ public class UserDao {
 
     synchronized public List<User> getAllUsers() {
         List<User> result = new ArrayList<>();
-        usersById.forEach((key, user) -> result.add(new User(user)));
+        usersById.forEach((key, user) -> result.add(user.copy()));
         return result;
     }
 

@@ -5,7 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ias.pas.hotelroom.spring.rest.managers.UserManager;
+import pl.ias.pas.hotelroom.spring.rest.model.Client;
+import pl.ias.pas.hotelroom.spring.rest.model.ResourceAdmin;
 import pl.ias.pas.hotelroom.spring.rest.model.User;
+import pl.ias.pas.hotelroom.spring.rest.model.UserAdmin;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -24,13 +27,36 @@ public class UserEndpoint {
     // przykładowe zapytanie tworzące nowego użytkownika
     // http POST localhost:8080/PASrest-1.0-SNAPSHOT/api/user login=test password=test name=test surname=test
 
+    @GetMapping("/hello")
+    public String test(){
+        System.out.println("########################");
+        System.out.println("hello");
+        System.out.println("########################");
+        return "Hello";
+    }
+
     //CREATE\\
-    @PostMapping(consumes = "application/json")
-    public ResponseEntity createUser(@Valid @RequestBody User user) {
+    @PostMapping(value="/create", consumes = "application/json")
+    public ResponseEntity createUser(@Valid @RequestBody Client user) {
         UUID createdUser = userManager.addUser(user);
 
         return ResponseEntity.created(URI.create("/user/" + createdUser)).build();
     }
+
+    @PostMapping(value="/createUserAdmin", consumes = "application/json")
+    public ResponseEntity createUser(@Valid @RequestBody UserAdmin user) {
+        UUID createdUser = userManager.addUser(user);
+
+        return ResponseEntity.created(URI.create("/user/" + createdUser)).build();
+    }
+
+    @PostMapping(value="/createResourceAdmin", consumes = "application/json")
+    public ResponseEntity createUser(@Valid @RequestBody ResourceAdmin user) {
+        UUID createdUser = userManager.addUser(user);
+
+        return ResponseEntity.created(URI.create("/user/" + createdUser)).build();
+    }
+
 
     //UPDATE\\
     @PostMapping(value = "/{id}", consumes = "application/json")
