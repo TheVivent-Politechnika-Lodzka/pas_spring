@@ -33,6 +33,15 @@ public class UserDao {
         }
     }
 
+    synchronized User getActualUser(UUID id) {
+        if (usersById.containsKey(id)) {
+            return usersById.get(id);
+        }
+        else {
+            throw new ResourceNotFoundException("User with id " + id + " does not exist");
+        }
+    }
+
     synchronized public UUID addUser(User user) {
         UUID id = UUID.randomUUID();
 
@@ -60,19 +69,6 @@ public class UserDao {
         if (!user.getLogin().equals(update.getLogin())
                 && usersByLogin.containsKey(update.getLogin())) {
             throw new ResourceAlreadyExistException("User with login " + update.getLogin() + " already exists");
-        }
-
-        if(update.getLogin() != null) {
-            update.validateLogin();
-        }
-        if(update.getPassword() != null) {
-            update.validatePassword();
-        }
-        if(update.getName() != null) {
-            update.validateName();
-        }
-        if(update.getSurname() != null) {
-            update.validateSurname();
         }
 
         if(update.getLogin() != null) {

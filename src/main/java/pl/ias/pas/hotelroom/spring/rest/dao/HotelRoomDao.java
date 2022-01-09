@@ -33,6 +33,14 @@ public class HotelRoomDao {
         }
     }
 
+    synchronized HotelRoom getActualRoom(UUID roomId) {
+        HotelRoom room = roomsById.get(roomId);
+        if (room == null) {
+            throw new ResourceNotFoundException("Room with id " + roomId + " not found");
+        }
+        return new HotelRoom(room);
+    }
+
     synchronized public UUID addHotelRoom(HotelRoom room) {
         UUID id = UUID.randomUUID();
 
@@ -121,4 +129,6 @@ public class HotelRoomDao {
         });
         return rooms;
     }
+
+
 }

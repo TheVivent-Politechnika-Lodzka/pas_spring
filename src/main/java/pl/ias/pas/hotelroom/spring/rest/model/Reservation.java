@@ -1,5 +1,6 @@
 package pl.ias.pas.hotelroom.spring.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import pl.ias.pas.hotelroom.spring.rest.exceptions.ValidationException;
 
@@ -20,36 +21,28 @@ public class Reservation {
     private Instant startDate;
 
     @Getter @Setter
+    @JsonIgnore
     private Instant endDate;
 
     @Getter @Setter
-    @NotNull
-    private UUID userId;
+    @JsonIgnore
+    private User user;
 
     @Getter @Setter
-    @NotNull
-    private UUID roomId;
+    private HotelRoom hotelRoom;
 
-    public Reservation(UUID id, Instant startDate, Instant endDate, UUID userId, UUID roomId) {
+    public Reservation(UUID id, Instant startDate, Instant endDate) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.userId = userId;
-        this.roomId = roomId;
-    }
-
-    public Reservation(Instant startDate, UUID userId, UUID roomId) {
-        this.startDate = startDate;
-        this.userId = userId;
-        this.roomId = roomId;
     }
 
     public Reservation(Reservation reservation) {
         this.id = reservation.getId();
         this.startDate = reservation.getStartDate();
         this.endDate = reservation.getEndDate();
-        this.userId = reservation.getUserId();
-        this.roomId = reservation.getRoomId();
+        this.user = new User(reservation.getUser());
+        this.hotelRoom = new HotelRoom(reservation.getHotelRoom());
     }
 
     public void setStartDate(Instant startDate) {

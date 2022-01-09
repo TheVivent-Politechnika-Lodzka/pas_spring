@@ -1,11 +1,14 @@
 package pl.ias.pas.hotelroom.spring.rest.dao;
 
 import com.pushtorefresh.javac_warning_annotation.Warning;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.ApplicationScope;
 import pl.ias.pas.hotelroom.spring.rest.exceptions.ResourceAlreadyExistException;
 import pl.ias.pas.hotelroom.spring.rest.exceptions.ResourceNotFoundException;
+import pl.ias.pas.hotelroom.spring.rest.model.HotelRoom;
 import pl.ias.pas.hotelroom.spring.rest.model.Reservation;
+import pl.ias.pas.hotelroom.spring.rest.model.User;
 
 
 import java.time.Instant;
@@ -17,8 +20,11 @@ import java.util.function.Predicate;
 @Repository
 public class ReservationDao {
 
-//    private List<Reservation> reservationsRepository = Collections.synchronizedList(new ArrayList<>());
-//    private List<Reservation> archiveRepository = Collections.synchronizedList(new ArrayList<>());
+    @Autowired
+    private UserDao users;
+    @Autowired
+    private HotelRoomDao rooms;
+
     private Map<UUID, Reservation> reservationsById = new HashMap<>();
 
     @Warning("This method is for testing only !!!")
@@ -30,8 +36,14 @@ public class ReservationDao {
         }
     }
 
-    synchronized public UUID addReservation(Reservation reservation) {
-        Reservation newReservation = new Reservation(reservation);
+    synchronized public UUID addReservation(Reservation reservation, UUID userId, UUID roomId) {
+        User user = users.getActualUser(userId);
+        HotelRoom hotelRoom = rooms.getActualRoom(roomId);
+
+        UUID id = UUID.randomUUID();
+        Reservation newReservation = new Reservation(id, reservation.getStartDate(), reservation.getEndDate());
+        newReservation.setUser(user);
+        newReservation.setHotelRoom(hotelRoom);
 
         if (reservationsById.containsKey(newReservation.getId())) {
             throw new ResourceAlreadyExistException("Reservation with id " + newReservation.getId() + " already exists");
@@ -52,12 +64,12 @@ public class ReservationDao {
     synchronized public void updateReservation(UUID reservationToUpdate, Reservation update) {
         Reservation reservation = reservationsById.get(reservationToUpdate);
 
-        if(update.getRoomId() != null) {
-            reservation.setRoomId(update.getRoomId());
-        }
-        if(update.getUserId() != null) {
-            reservation.setUserId(update.getUserId());
-        }
+//        if(update.getRoomId() != null) {
+//            reservation.setRoomId(update.getRoomId());
+//        }
+//        if(update.getUserId() != null) {
+//            reservation.setUserId(update.getUserId());
+//        }
         if(update.getStartDate() != null) {
             reservation.setStartDate(update.getStartDate());
         }

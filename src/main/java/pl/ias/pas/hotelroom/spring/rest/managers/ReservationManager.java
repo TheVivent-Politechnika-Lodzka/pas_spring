@@ -35,16 +35,11 @@ public class ReservationManager {
         return reservationDao.getReservationById(id);
     }
 
-    public UUID addReservation(Reservation reservation) {
-        UUID id = UUID.randomUUID();
+    public UUID addReservation(Reservation reservation, UUID userId, UUID roomId) {
 
-        User user = userDao.getUserById(reservation.getUserId());
-        HotelRoom room = roomDao.getRoomById(reservation.getRoomId());
+        User user = userDao.getUserById(userId);
+        HotelRoom room = roomDao.getRoomById(roomId);
 
-        //sprawdzenie czy nie jest juz przypadkiem wynajmowany
-        if(room.isAllocated()) {
-            throw new ResourceAllocatedException("Room is already occupied");
-        }
 
         Instant endDate = reservation.getEndDate();
         Instant startDate = reservation.getStartDate();
@@ -53,29 +48,43 @@ public class ReservationManager {
             throw new ValidationException("Start date is after end date");
         }
 
-        Reservation newReservation = new Reservation(id, startDate, endDate, user.getId(), room.getId());
-        room.setAllocated(true);
+        final Instant finalStartDate = startDate;
+        final Instant finalEndDate = endDate;
 
-        return reservationDao.addReservation(newReservation);
+        //sprawdzenie czy nie jest juz przypadkiem wynajmowany
+        List<Reservation> tmpReservations = reservationDao.customSearch((res) -> {
+            if (res.getStartDate().isAfter(finalStartDate) && res.getEndDate().isBefore(finalEndDate)) {
+                return true;
+            }
+            return false;
+        });
+
+        if(!tmpReservations.isEmpty()) {
+            throw new ResourceAllocatedException("Room is already occupied");
+        }
+
+        Reservation newReservation = new Reservation(UUID.randomUUID(), startDate, endDate);
+
+        return reservationDao.addReservation(newReservation, user.getId(), room.getId());
     }
 
     public void endReseravation(UUID id) {
         reservationDao.endReservation(id);
     }
 
-    public void updateReservation(UUID reservationToUpdate, Reservation update) throws ResourceNotFoundException {
-        // sprawdzi czy user/room istnieje
-        if (update.getUserId() != null) {
-            userDao.getUserById(update.getUserId());
-        }
-        if(update.getRoomId() != null) {
-            roomDao.getRoomById(update.getRoomId());
-        }
-
-        // TODO jakaś skomplikowana walidacja co do dat
-
-        reservationDao.updateReservation(reservationToUpdate, update);
-    }
+    // za dużo myślenia nad implementacją
+//    public void updateReservation(UUID reservationToUpdate, Reservation update) {
+//        // sprawdzi czy user/room istnieje
+//        if (update.getUserId() != null) {
+//            userDao.getUserById(update.getUserId());
+//        }
+//        if(update.getRoomId() != null) {
+//            roomDao.getRoomById(update.getRoomId());
+//        }
+//
+//
+//        reservationDao.updateReservation(reservationToUpdate, update);
+//    }
 
 
     public List<Reservation> getEndedReservations() {
@@ -96,7 +105,7 @@ public class ReservationManager {
 
         List<Reservation> result = new ArrayList<>();
         result = reservationDao.customSearch((reservation) ->
-                reservation.getUserId().equals(cliendId)
+                reservation.getUser().getId().equals(cliendId)
                 && (includeArchived || reservation.isActive())
         );
 

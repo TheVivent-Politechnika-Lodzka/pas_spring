@@ -24,21 +24,25 @@ public class ReservationEndpoint {
 
 
     //CREATE\\
-    @PostMapping(consumes = "application/json")
-    public ResponseEntity createReservation(@Valid @RequestBody Reservation reservation) {
-        UUID createdReservation = reservationManager.addReservation(reservation);
+    @PostMapping(value="/{userId}/{roomId}", consumes = "application/json")
+    public ResponseEntity createReservation(@Valid @RequestBody Reservation reservation,
+            @PathVariable("userId") String userId, @PathVariable("roomId") String roomId
+    ) {
+        UUID userUUID = UUID.fromString(userId);
+        UUID roomUUID = UUID.fromString(roomId);
+        UUID createdReservation = reservationManager.addReservation(reservation, userUUID, roomUUID);
 
         return ResponseEntity.created(URI.create("/reservation/" + createdReservation)).build();
     }
 
     //UPDATE\\
-    @PostMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity updateReservation(@PathVariable("id") String reservationToUpdate, @RequestBody Reservation update) {
-        UUID id = UUID.fromString(reservationToUpdate);
-        reservationManager.updateReservation(id, update);
-
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping(value = "/{id}", consumes = "application/json")
+//    public ResponseEntity updateReservation(@PathVariable("id") String reservationToUpdate, @RequestBody Reservation update) {
+//        UUID id = UUID.fromString(reservationToUpdate);
+//        reservationManager.updateReservation(id, update);
+//
+//        return ResponseEntity.ok().build();
+//    }
 
     //DELETE\\ // TODO przemyśleć czy to jest dobrze
     @DeleteMapping(value = "/{id}")

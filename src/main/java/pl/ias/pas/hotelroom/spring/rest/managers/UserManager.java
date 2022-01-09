@@ -68,20 +68,18 @@ public class UserManager {
 
     public void updateUser(UUID userToUpdate, User update) {
 
-        // TODO zrobić jakąś walidację
-
-//        if (update.getLogin() != null) {
-//            update.validateLogin();
-//        }
-//        if (update.getPassword() != null) {
-//            update.validatePassword();
-//        }
-//        if (update.getName() != null) {
-//            update.validateName();
-//        }
-//        if (update.getSurname() != null) {
-//            update.validateSurname();
-//        }
+        if (update.getLogin() != null) {
+            update.validateLogin();
+        }
+        if (update.getPassword() != null) {
+            update.validatePassword();
+        }
+        if (update.getName() != null) {
+            update.validateName();
+        }
+        if (update.getSurname() != null) {
+            update.validateSurname();
+        }
 
         userDao.updateUser(userToUpdate, update);
     }
