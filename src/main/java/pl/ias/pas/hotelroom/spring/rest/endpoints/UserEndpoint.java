@@ -49,8 +49,8 @@ public class UserEndpoint {
         return ResponseEntity.ok().build();
     }
 
-    //DELETE\\
-    @DeleteMapping(value = "/{id}")
+    //ARCHIVE\\
+    @RequestMapping(value = "/archive/{id}")
     public ResponseEntity archiveUser(@PathVariable("id") String id) {
         userManager.archiveUser(UUID.fromString(id));
 
