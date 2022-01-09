@@ -45,8 +45,8 @@ public class User{
 //    @JsonIgnore
     private boolean isActive = true;
 
-    public User(String login, String password, String name, String surname) {
-        this.id = UUID.randomUUID();
+    public User(UUID id, String login, String password, String name, String surname) {
+        this.id = id;
         this.login = login;
         this.password = password;
         this.name = name;

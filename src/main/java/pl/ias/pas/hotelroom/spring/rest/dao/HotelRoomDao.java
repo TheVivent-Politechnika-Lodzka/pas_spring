@@ -34,8 +34,10 @@ public class HotelRoomDao {
     }
 
     synchronized public UUID addHotelRoom(HotelRoom room) {
+        UUID id = UUID.randomUUID();
+
         //wykonaj kopię pokoju, aby nie były możliwe zmiany w obiekcie
-        HotelRoom newRoom = new HotelRoom(room.getRoomNumber(), room.getPrice(), room.getCapacity(), room.getDescription());
+        HotelRoom newRoom = new HotelRoom(id, room.getRoomNumber(), room.getPrice(), room.getCapacity(), room.getDescription());
 
         if (roomsById.containsKey(newRoom.getId())) {
             throw new ResourceAlreadyExistException("Room with id " + newRoom.getId() + " already exist");

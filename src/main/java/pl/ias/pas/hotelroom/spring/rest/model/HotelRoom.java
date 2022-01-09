@@ -39,13 +39,21 @@ public class HotelRoom {
     @JsonIgnore
     private boolean isActive = true;
 
-    public HotelRoom(int roomNumber, int price, int capacity, String description) {
-        this.id = UUID.randomUUID(); // wygenerowanie id, repo sprawdzi czy jest unikalne
+    public HotelRoom(UUID id, int roomNumber, int price, int capacity, String description) {
+        this.id = id;
         this.roomNumber = roomNumber;
         this.price = price;
         this.capacity = capacity;
         this.description = description;
     }
+
+    //    public HotelRoom(int roomNumber, int price, int capacity, String description) {
+//        this.id = UUID.randomUUID(); // wygenerowanie id, repo sprawdzi czy jest unikalne
+//        this.roomNumber = roomNumber;
+//        this.price = price;
+//        this.capacity = capacity;
+//        this.description = description;
+//    }
 
     public HotelRoom(HotelRoom hotelRoom) {
         this.id = hotelRoom.getId();

@@ -36,6 +36,7 @@ public class ReservationManager {
     }
 
     public UUID addReservation(Reservation reservation) {
+        UUID id = UUID.randomUUID();
 
         User user = userDao.getUserById(reservation.getUserId());
         HotelRoom room = roomDao.getRoomById(reservation.getRoomId());
@@ -48,11 +49,11 @@ public class ReservationManager {
         Instant endDate = reservation.getEndDate();
         Instant startDate = reservation.getStartDate();
         if (startDate == null) startDate = Instant.now();
-        if (endDate !=null && startDate.isAfter(endDate)) { // sprawdzanie na startDate, bo endDate może być null
+        if (endDate !=null && startDate.isAfter(endDate)) {
             throw new ValidationException("Start date is after end date");
         }
 
-        Reservation newReservation = new Reservation(startDate, endDate, user.getId(), room.getId());
+        Reservation newReservation = new Reservation(id, startDate, endDate, user.getId(), room.getId());
         room.setAllocated(true);
 
         return reservationDao.addReservation(newReservation);

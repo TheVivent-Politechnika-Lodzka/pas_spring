@@ -22,9 +22,9 @@ public class HotelRoomDaoTest {
         hotelRoomDao = new HotelRoomDao();
         roomIds = new ArrayList<>(3);
 
-        HotelRoom hotelRoom1 = new HotelRoom(1, 100, 10, "Pierwszy pokój");
-        HotelRoom hotelRoom2 = new HotelRoom(2, 200, 20, "Drugi pokój");
-        HotelRoom hotelRoom3 = new HotelRoom(3, 300, 30, "Trzeci pokój");
+        HotelRoom hotelRoom1 = new HotelRoom(UUID.randomUUID(),1, 100, 10, "Pierwszy pokój");
+        HotelRoom hotelRoom2 = new HotelRoom(UUID.randomUUID(),2, 200, 20, "Drugi pokój");
+        HotelRoom hotelRoom3 = new HotelRoom(UUID.randomUUID(),3, 300, 30, "Trzeci pokój");
 
         roomIds.add(hotelRoomDao.addHotelRoom(hotelRoom1));
         roomIds.add(hotelRoomDao.addHotelRoom(hotelRoom2));

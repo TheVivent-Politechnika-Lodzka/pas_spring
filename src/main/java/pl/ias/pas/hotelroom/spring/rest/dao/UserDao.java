@@ -34,8 +34,10 @@ public class UserDao {
     }
 
     synchronized public UUID addUser(User user) {
+        UUID id = UUID.randomUUID();
+
         //wykonaj kopię obiektu user, aby nie zmieniać obiektu w repozytorium
-        User newUser = new User(user.getLogin(), user.getPassword(), user.getName(), user.getSurname());
+        User newUser = new User(id, user.getLogin(), user.getPassword(), user.getName(), user.getSurname());
 
         if(usersById.containsKey(newUser.getId())) {
             throw new IllegalArgumentException("User with id " + newUser.getId() + " already exists");

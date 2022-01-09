@@ -30,8 +30,8 @@ public class Reservation {
     @NotNull
     private UUID roomId;
 
-    public Reservation(Instant startDate, Instant endDate, UUID userId, UUID roomId) {
-        this.id = UUID.randomUUID();
+    public Reservation(UUID id, Instant startDate, Instant endDate, UUID userId, UUID roomId) {
+        this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.userId = userId;

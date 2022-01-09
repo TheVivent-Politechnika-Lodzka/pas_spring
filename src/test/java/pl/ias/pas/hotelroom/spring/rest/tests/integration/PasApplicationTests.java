@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.ias.pas.hotelroom.spring.rest.model.User;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -32,7 +34,7 @@ class PasApplicationTests {
     @Test
     void userCreation() throws Exception {
         String uri = "/user";
-        User user = new User("login1", "123123123", "Jan", "Kowalski");
+        User user = new User(UUID.randomUUID(), "login1", "123123123", "Jan", "Kowalski");
 
         mockMvc.perform(post(uri)
                 .contentType("application/json")
