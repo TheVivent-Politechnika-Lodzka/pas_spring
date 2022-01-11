@@ -39,7 +39,6 @@ abstract public class User<T extends User<T>>{
     private String surname;
 
     @Getter @Setter
-//    @JsonIgnore
     private boolean isActive = true;
 
     public User(UUID id, String login, String password, String name, String surname) {
@@ -61,6 +60,7 @@ abstract public class User<T extends User<T>>{
 
     abstract public T copy();
 
+    @JsonIgnore
     abstract public int getPermissionLevel();
 
     public void validateLogin() throws ValidationException {
