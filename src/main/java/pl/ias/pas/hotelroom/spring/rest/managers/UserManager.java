@@ -58,8 +58,8 @@ public class UserManager {
         return userDao.addUser(user);
     }
 
-    public void archiveUser(UUID id) {
-        userDao.archiveUser(id);
+    public void deactivateUser(UUID id) {
+        userDao.deactivateUser(id);
     }
 
     public void activateUser(UUID id) {

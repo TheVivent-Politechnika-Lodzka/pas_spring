@@ -94,7 +94,7 @@ public class UserDao {
         }
     }
 
-    synchronized public void archiveUser(UUID user) {
+    synchronized public void deactivateUser(UUID user) {
         if (usersById.containsKey(user)) {
             usersById.get(user).setActive(false);
         }

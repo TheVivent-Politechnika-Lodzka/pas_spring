@@ -76,9 +76,9 @@ public class UserEndpoint {
     }
 
     //ARCHIVE\\
-    @RequestMapping(value = "/archive/{id}")
+    @RequestMapping(value = "/deactivate/{id}")
     public ResponseEntity archiveUser(@PathVariable("id") String id) {
-        userManager.archiveUser(UUID.fromString(id));
+        userManager.deactivateUser(UUID.fromString(id));
 
         return ResponseEntity.ok().build();
     }
