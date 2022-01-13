@@ -60,7 +60,7 @@ public class UserEndpoint {
 
     //UPDATE\\
     @PostMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity updateUser(@PathVariable("id") String userToUpdate, @RequestBody User update) {
+    public ResponseEntity updateUser(@PathVariable("id") String userToUpdate, @RequestBody Client update) {
         UUID id = UUID.fromString(userToUpdate);
         userManager.updateUser(id, update);
 
