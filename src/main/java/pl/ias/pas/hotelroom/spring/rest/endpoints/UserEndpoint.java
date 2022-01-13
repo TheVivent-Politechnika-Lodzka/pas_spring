@@ -76,7 +76,7 @@ public class UserEndpoint {
     }
 
     //ARCHIVE\\
-    @RequestMapping(value = "/deactivate/{id}")
+    @RequestMapping(value = "/deactivate/{id}", method = RequestMethod.HEAD)
     public ResponseEntity archiveUser(@PathVariable("id") String id) {
         userManager.deactivateUser(UUID.fromString(id));
 
@@ -86,7 +86,7 @@ public class UserEndpoint {
     //READ\\
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<User> getUserById(@PathVariable("id") String id) {
-        User user = userManager.getUserById(UUID.fromString(id), false);
+        User user = userManager.getUserById(UUID.fromString(id), true);
 
         return ResponseEntity.ok(user);
     }
@@ -107,7 +107,7 @@ public class UserEndpoint {
 
     @GetMapping(value = "/all", produces = "application/json")
     public ResponseEntity<?> getAllUsers(@RequestParam(required = false, value = "scope") String scope) {
-        if (scope == null || scope.isEmpty()) scope = "active";
+        if (scope == null || scope.isEmpty()) scope = "all";
         List<User> toReturn;
         switch (scope) {
             case "active":
