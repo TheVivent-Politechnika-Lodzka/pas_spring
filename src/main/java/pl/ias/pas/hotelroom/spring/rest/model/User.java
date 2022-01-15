@@ -60,7 +60,6 @@ abstract public class User<T extends User<T>>{
 
     abstract public T copy();
 
-    @JsonIgnore
     abstract public int getPermissionLevel();
 
     public void validateLogin() throws ValidationException {
