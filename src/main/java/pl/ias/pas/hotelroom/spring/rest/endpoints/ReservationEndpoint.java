@@ -48,7 +48,7 @@ public class ReservationEndpoint {
 //    }
 
     //DELETE\\ // TODO przemyśleć czy to jest dobrze
-    @DeleteMapping(value = "/{id}")
+    @RequestMapping(value = "/end/{id}", method = RequestMethod.HEAD)
     public ResponseEntity archiveReservation(@PathVariable("id") String id) {
         reservationManager.endReseravation(UUID.fromString(id));
 
