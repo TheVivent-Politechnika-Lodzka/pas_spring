@@ -18,8 +18,8 @@ public class ResourceAdmin extends User<ResourceAdmin> {
     }
 
     @Override
-    public int getPermissionLevel() {
-        return 500;
+    public String getPermissionLevel() {
+        return "RESOURCE_ADMIN";
     }
 
 }

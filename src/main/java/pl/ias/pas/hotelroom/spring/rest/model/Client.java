@@ -18,7 +18,7 @@ public class Client extends User<Client> {
     }
 
     @Override
-    public int getPermissionLevel() {
-        return 1000;
+    public String getPermissionLevel() {
+        return "CLIENT";
     }
 }

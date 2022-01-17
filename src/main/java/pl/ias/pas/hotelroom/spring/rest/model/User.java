@@ -60,7 +60,7 @@ abstract public class User<T extends User<T>>{
 
     abstract public T copy();
 
-    abstract public int getPermissionLevel();
+    abstract public String getPermissionLevel();
 
     public void validateLogin() throws ValidationException {
         if(login.length() < 3 || login.length() > 20)

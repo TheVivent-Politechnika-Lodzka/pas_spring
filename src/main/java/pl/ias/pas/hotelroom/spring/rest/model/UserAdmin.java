@@ -19,7 +19,7 @@ public class UserAdmin extends User<UserAdmin> {
     }
 
     @Override
-    public int getPermissionLevel() {
-        return 0;
+    public String getPermissionLevel() {
+        return "USER_ADMIN";
     }
 }
