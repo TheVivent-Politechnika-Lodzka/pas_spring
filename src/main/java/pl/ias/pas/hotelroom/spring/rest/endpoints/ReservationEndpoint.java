@@ -25,9 +25,12 @@ public class ReservationEndpoint {
 
     //CREATE\\
     @PostMapping(value="/{userId}/{roomId}", consumes = "application/json")
-    public ResponseEntity createReservation(@Valid @RequestBody Reservation reservation,
+    public ResponseEntity createReservation(@Valid @RequestBody(required = false) Reservation reservation,
             @PathVariable("userId") String userId, @PathVariable("roomId") String roomId
     ) {
+        if (reservation == null) {
+            reservation = new Reservation();
+        }
         UUID userUUID = UUID.fromString(userId);
         UUID roomUUID = UUID.fromString(roomId);
         UUID createdReservation = reservationManager.addReservation(reservation, userUUID, roomUUID);

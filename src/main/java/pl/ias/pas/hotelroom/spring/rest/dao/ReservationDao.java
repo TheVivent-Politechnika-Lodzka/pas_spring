@@ -87,8 +87,8 @@ public class ReservationDao {
     }
 
     synchronized public List<Reservation> getAllReservations() {
-        List<Reservation> reservations = new ArrayList<>();
-        reservationsById.forEach((id, reservation) -> reservations.add(new Reservation(reservation)));
+        List<Reservation> reservations = new ArrayList<Reservation>(reservationsById.size());
+        reservationsById.forEach((key, reservation) -> reservations.add(new Reservation(reservation)));
         return reservations;
     }
 
