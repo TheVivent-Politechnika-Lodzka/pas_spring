@@ -53,8 +53,21 @@ public class ReservationManager {
 
         //sprawdzenie czy nie jest juz przypadkiem wynajmowany
         List<Reservation> tmpReservations = reservationDao.customSearch((res) -> {
-            if (res.getStartDate().isAfter(finalStartDate) && res.getEndDate().isBefore(finalEndDate)) {
-                return true;
+            // jeżeli to inny pokój, to nie ma znaczenia
+            if (!res.getHotelRoom().getId().equals(roomId)) return false;
+
+            if (res.getEndDate() == null) {
+                // jeżeli nie ma konca to jest w trakcie
+                // jeżeli start nowej rezerwacji jest po starej to jest konflikt
+                if (finalStartDate.isAfter(res.getStartDate())) return true;
+            }
+            else {
+                // jeżeli początek nowej rezerwacji jest w granicach dat starej to jest konflikt
+                if (finalStartDate.isAfter(res.getStartDate()) && finalStartDate.isBefore(res.getEndDate())) return true;
+                // jeżeli koniec nowej rezerwacji jest w granicach dat starej to jest konflikt
+                if (finalEndDate != null){
+                    if (finalEndDate.isAfter(res.getStartDate()) && finalEndDate.isBefore(res.getStartDate())) return true;
+                }
             }
             return false;
         });
