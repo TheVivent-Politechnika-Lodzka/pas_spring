@@ -99,14 +99,15 @@ public class ReservationManager {
         return reservationDao.getAllReservations();
     }
 
-    public List<Reservation> searchReservations(UUID cliendId, boolean includeArchived) {
+    public List<Reservation> searchReservations(String cliendId, String roomId, boolean includeArchived) {
         // sprawdź czy user istnieje
-        userDao.getUserById(cliendId);
+//        userDao.getUserById(cliendId);
 
-        List<Reservation> result = new ArrayList<>();
+        List<Reservation> result;
         result = reservationDao.customSearch((reservation) ->
-                reservation.getUser().getId().equals(cliendId)
-                && (includeArchived || reservation.isActive())
+                reservation.getUser().getId().toString().contains(cliendId) &&
+                reservation.getHotelRoom().getId().toString().contains(roomId) &&
+                (includeArchived || reservation.isActive())
         );
 
         if (result.isEmpty()) {

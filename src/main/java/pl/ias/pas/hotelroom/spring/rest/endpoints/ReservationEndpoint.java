@@ -69,13 +69,13 @@ public class ReservationEndpoint {
     }
 
     //SEARCH\\
-    @GetMapping(value = "/search/{clientId}", produces = "application/json")
+    @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<List<Reservation>> getActiveReservationByClient(
-            @PathVariable("clientId") String clientId,
+            @RequestParam(value = "clientId", required = false, defaultValue = "") String clientId,
+            @RequestParam(value = "roomId", required = false, defaultValue = "") String roomId,
             @RequestParam(value = "archived", required = false, defaultValue = "false") boolean archived
     ) {
-        UUID clienUUID = UUID.fromString(clientId);
-        List<Reservation> reservations = reservationManager.searchReservations(clienUUID, archived);
+        List<Reservation> reservations = reservationManager.searchReservations(clientId, roomId, archived);
         return ResponseEntity.ok(reservations);
     }
 }
