@@ -65,9 +65,7 @@ public class HotelRoomDao {
         if (room == null) {
             throw new ResourceNotFoundException("Room with id " + roomToUpdate + " not found");
         }
-        if (roomsByNumber.containsKey(update.getRoomNumber())) {
-            throw new ResourceAlreadyExistException("Room with number " + update.getRoomNumber() + " already exist");
-        }
+
 
         if(update.getRoomNumber() > 0) {
             // usuń pokój z mapy pokojów po numerze
