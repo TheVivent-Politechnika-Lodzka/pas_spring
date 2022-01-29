@@ -36,7 +36,6 @@ public class HotelRoom {
     private boolean isAllocated = false;
 
     @Getter @Setter
-    @JsonIgnore
     private boolean isActive = true;
 
     public HotelRoom(UUID id, int roomNumber, int price, int capacity, String description) {

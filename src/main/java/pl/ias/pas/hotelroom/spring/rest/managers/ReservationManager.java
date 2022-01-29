@@ -40,6 +40,9 @@ public class ReservationManager {
         User user = userDao.getUserById(userId);
         HotelRoom room = roomDao.getRoomById(roomId);
 
+        if (room.isActive() == false) {
+            throw new ResourceNotFoundException("Room is not active");
+        }
 
         Instant endDate = reservation.getEndDate();
         Instant startDate = reservation.getStartDate();
