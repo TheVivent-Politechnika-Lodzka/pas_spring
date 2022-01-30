@@ -42,7 +42,7 @@ public class HotelRoomEndpoint {
     //DELETE\\
     @DeleteMapping(value = "/{id}")
     public ResponseEntity removeRoom(@PathVariable("id") String id) {
-        roomManager.archiveRoom(UUID.fromString(id));
+        roomManager.deleteRoom(UUID.fromString(id));
         return ResponseEntity.ok().build();
     }
 

@@ -20,7 +20,6 @@ public class HotelRoomDao {
     private Map<UUID, HotelRoom> roomsById = new HashMap<>();
     private Map<Integer, HotelRoom> roomsByNumber = new HashMap<>();
 
-    @Warning("This method is for testing only !!!")
     synchronized public void deleteRoom(UUID roomId) {
         if(roomsById.containsKey(roomId)){
             roomsByNumber.remove(

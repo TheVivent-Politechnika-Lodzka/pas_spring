@@ -36,14 +36,14 @@ public class HotelRoomManager {
         return roomDao.addHotelRoom(room);
     }
 
-    public void archiveRoom(UUID roomId) {
+    public void deleteRoom(UUID roomId) {
         HotelRoom room = roomDao.getRoomById(roomId);
 
         if(room.isAllocated()) {
             throw new ResourceAllocatedException("Room is already allocated");
         }
 
-        roomDao.archiveRoom(roomId);
+        roomDao.deleteRoom(roomId);
     }
 
     public void updateRoom(UUID roomToUpdate, HotelRoom update) {

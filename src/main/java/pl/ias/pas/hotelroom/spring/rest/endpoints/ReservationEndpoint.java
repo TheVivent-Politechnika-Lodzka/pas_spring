@@ -73,7 +73,7 @@ public class ReservationEndpoint {
     public ResponseEntity<List<Reservation>> getActiveReservationByClient(
             @RequestParam(value = "clientId", required = false, defaultValue = "") String clientId,
             @RequestParam(value = "roomId", required = false, defaultValue = "") String roomId,
-            @RequestParam(value = "archived", required = false, defaultValue = "false") boolean archived
+            @RequestParam(value = "archived", required = false, defaultValue = "true") boolean archived
     ) {
         List<Reservation> reservations = reservationManager.searchReservations(clientId, roomId, archived);
         return ResponseEntity.ok(reservations);
